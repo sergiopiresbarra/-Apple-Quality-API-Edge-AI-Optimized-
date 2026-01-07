@@ -26,3 +26,23 @@ Durante o pipeline, duas novas features são calculadas em tempo real:
    ```bash
    git clone [https://github.com/SEU-USUARIO/apple-quality-api.git](https://github.com/SEU-USUARIO/apple-quality-api.git)
    cd apple-quality-api
+
+2. **Instale as dependências:**
+   ```bash
+   pip install -r requirements.txt
+
+3. **Inicie o Servidor:**
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8000
+
+4. **Teste:**
+   Acesse http://localhost:8000/docs para usar a interface interativa (Swagger UI).
+
+## ⚡ Otimização (TensorFlow-Free)
+
+O modelo treinado (.keras) foi decomposto, extraindo-se os pesos (Weights) e viéses (Biases) de cada camada densa. A inferência é realizada através da multiplicação de matrizes manual:
+   ```python
+   # Exemplo da lógica implementada (sem TensorFlow)
+   layer1 = relu(np.dot(X, W1) + b1)
+   layer2 = relu(np.dot(layer1, W2) + b2)
+   output = sigmoid(np.dot(layer2, W3) + b3)
