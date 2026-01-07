@@ -46,3 +46,5 @@ O modelo treinado (.keras) foi decomposto, extraindo-se os pesos (Weights) e vi√
    layer1 = relu(np.dot(X, W1) + b1)
    layer2 = relu(np.dot(layer1, W2) + b2)
    output = sigmoid(np.dot(layer2, W3) + b3)
+
+Isso garante que o modelo rode em qualquer ambiente com suporte m√≠nimo a Python, sem necessidade de instalar bibliotecas pesadas de Deep Learning.
