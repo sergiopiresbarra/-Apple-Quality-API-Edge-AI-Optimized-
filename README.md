@@ -41,10 +41,10 @@ Durante o pipeline, duas novas features são calculadas em tempo real:
 ## ⚡ Otimização (TensorFlow-Free)
 
 O modelo treinado (.keras) foi decomposto, extraindo-se os pesos (Weights) e viéses (Biases) de cada camada densa. A inferência é realizada através da multiplicação de matrizes manual:
-   ```python
-   # Exemplo da lógica implementada (sem TensorFlow)
-   layer1 = relu(np.dot(X, W1) + b1)
-   layer2 = relu(np.dot(layer1, W2) + b2)
-   output = sigmoid(np.dot(layer2, W3) + b3)
+      ```python
+      # Exemplo da lógica implementada (sem TensorFlow)
+      layer1 = relu(np.dot(X, W1) + b1)
+      layer2 = relu(np.dot(layer1, W2) + b2)
+      output = sigmoid(np.dot(layer2, W3) + b3)
 
 Isso garante que o modelo rode em qualquer ambiente com suporte mínimo a Python, sem necessidade de instalar bibliotecas pesadas de Deep Learning.
