@@ -1,0 +1,8 @@
+# Ignora caches e arquivos temporários
+__pycache__
+*.pyc
+.git
+.gitignore
+venv
+.replit
+.upm
