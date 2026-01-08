@@ -49,3 +49,15 @@ O modelo treinado (.keras) foi decomposto, extraindo-se os pesos (Weights) e vi�
    ```
 
 Isso garante que o modelo rode em qualquer ambiente com suporte mínimo a Python, sem necessidade de instalar bibliotecas pesadas de Deep Learning.
+
+## 🌟 Novas Features (v2.0)
+
+### 1. Integração com IA Generativa (GenAI)
+O sistema não apenas classifica, mas propõe soluções de negócio.
+- **Fluxo:** Se uma maçã é reprovada (`Prob < 0.53`), o sistema aciona a API do **Google Gemini (LLM)** via *Prompt Engineering*.
+- **Resultado:** A IA analisa as falhas (ex: excesso de acidez) e sugere uma receita culinária personalizada (ex: "Membrillo de Maçã Rústico") para recuperar o valor do produto que seria descartado.
+
+### 2. Persistência de Dados (SQL)
+Implementação de banco de dados relacional (SQLite) para rastreabilidade.
+- Todo teste realizado é logado na tabela `auditoria` com timestamp, métricas de entrada, veredito da IA Clássica e sugestão da IA Generativa.
+
