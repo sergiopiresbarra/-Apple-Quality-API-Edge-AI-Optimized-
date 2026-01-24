@@ -61,3 +61,7 @@ O sistema não apenas classifica, mas propõe soluções de negócio.
 Implementação de banco de dados relacional (SQLite) para rastreabilidade.
 - Todo teste realizado é logado na tabela `auditoria` com timestamp, métricas de entrada, veredito da IA Clássica e sugestão da IA Generativa.
 
+## 🌟 Novas Features (v3.0)
+
+**Interface Gráfica (Front-end):** Desenvolvimento de um Dashboard em HTML/JS para facilitar o uso por usuários não técnicos.
+**Auditoria Visual:** Nova rota `/historico` conectada ao Front-end, permitindo visualizar as últimas análises e decisões da IA em tempo real.
