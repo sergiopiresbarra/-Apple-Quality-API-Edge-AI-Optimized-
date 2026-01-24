@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppleSmart AI 🍎</title>
+    <style>
+        body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; text-align: center; }
+        h1 { color: #4CAF50; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); max-width: 400px; margin: 0 auto; }
+        input { width: 90%; padding: 10px; margin: 5px 0; background: #333; border: 1px solid #444; color: white; border-radius: 5px; }
+        button { width: 100%; padding: 15px; background: #4CAF50; border: none; color: white; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 15px; font-weight: bold; }
+        button:hover { background: #45a049; }
+        #resultado { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+        .receita { font-size: 0.9em; color: #aaa; margin-top: 10px; font-style: italic; border-top: 1px solid #333; padding-top: 10px; }
+        .aprovado { color: #4CAF50; }
+        .reprovado { color: #ff5252; }
+        label { display: block; text-align: left; margin-left: 15px; font-size: 0.8em; color: #888; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🍎 AppleSmart AI</h1>
+        <p>Controle de Qualidade Inteligente</p>
+
+        <label>Tamanho</label> <input type="number" id="Size" value="-1.0">
+        <label>Peso</label> <input type="number" id="Weight" value="-0.5">
+        <label>Doçura (Brix)</label> <input type="number" id="Sweetness" value="-1.2">
+        <label>Crocância</label> <input type="number" id="Crunchiness" value="0.5">
+        <label>Suculência</label> <input type="number" id="Juiciness" value="1.5">
+        <label>Maturação</label> <input type="number" id="Ripeness" value="0.2">
+        <label>Acidez</label> <input type="number" id="Acidity" value="-0.8">
+
+        <button onclick="analisarMaca()">🔍 Analisar Maçã</button>
+	<button onclick="carregarHistorico()" style="background:#2196F3; margin-top:10px;">📜 Ver Histórico</button>
+	<div id="tabela-historico" style="margin-top:20px; text-align:left; color:#ccc; font-size:0.9em;"></div>
+
+        <div id="loading" style="display:none;">⏳ Processando IA...</div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        async function analisarMaca() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('output').innerHTML = '';
+
+            // Pega os valores dos inputs
+            const dados = {
+                Size: parseFloat(document.getElementById('Size').value),
+                Weight: parseFloat(document.getElementById('Weight').value),
+                Sweetness: parseFloat(document.getElementById('Sweetness').value),
+                Crunchiness: parseFloat(document.getElementById('Crunchiness').value),
+                Juiciness: parseFloat(document.getElementById('Juiciness').value),
+                Ripeness: parseFloat(document.getElementById('Ripeness').value),
+                Acidity: parseFloat(document.getElementById('Acidity').value)
+            };
+
+            try {
+                // Tenta conectar na API local (Termux)
+                const response = await fetch('http://127.0.0.1:8000/predict_and_genai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const json = await response.json();
+                
+                let cor = json.veredito.includes("APROVADA") ? "aprovado" : "reprovado";
+                let html = `<div id="resultado" class="${cor}">${json.veredito}</div>`;
+                html += `<p>Probabilidade: ${(json.probabilidade * 100).toFixed(1)}%</p>`;
+                
+                if (json.sugestao_gemini && json.sugestao_gemini !== "N/A - Venda In Natura") {
+                    html += `<div class="receita">💡 Sugestão GenAI:<br>"${json.sugestao_gemini}"</div>`;
+                }
+
+                document.getElementById('output').innerHTML = html;
+            } catch (erro) {
+                document.getElementById('output').innerHTML = `<p style="color:red">Erro ao conectar na API. Verifique se o Uvicorn está rodando!</p>`;
+                console.error(erro);
+            }
+            document.getElementById('loading').style.display = 'none';
+        }
+async function carregarHistorico() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/historico');
+        const lista = await response.json();
+        
+        let html = '<h3 style="border-bottom:1px solid #444; padding-bottom:5px;">Últimas Análises</h3>';
+        
+        lista.forEach(item => {
+            // Formata a data (opcional, pega só hora se quiser)
+            let data = item.data_hora.split('.')[0]; 
+            
+            html += `
+            <div style="background:#222; padding:10px; margin-bottom:5px; border-radius:5px; border-left: 4px solid ${item.resultado.includes('APROVADA') ? '#4CAF50' : '#ff5252'}">
+                <strong>${item.resultado}</strong> <small>(${data})</small><br>
+                <span style="color:#aaa;">Doçura: ${item.doçura} | Prob: ${(item.probabilidade*100).toFixed(1)}%</span>
+                ${item.receita_sugerida !== 'N/A - Venda In Natura' ? `<br><em style="color:#4CAF50; font-size:0.8em">💡 ${item.receita_sugerida}</em>` : ''}
+            </div>`;
+        });
+        
+        document.getElementById('tabela-historico').innerHTML = html;
+    } catch (e) {
+        alert("Erro ao carregar histórico. O servidor está rodando?");
+    }
+}
+    </script>
+</body>
+</html>

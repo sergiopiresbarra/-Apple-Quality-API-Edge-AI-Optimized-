@@ -1,0 +1,20 @@
+build:
+docker build -t apple-api .
+
+pegar a chave api da ia-generativa(ex: google gemini):
+https://aistudio.google.com/app/api-keys
+
+executar(passando a chave api):
+docker run -e GEMINI_API_KEY="AIza......cole_o_resto_aqui" -p 8000:8000 apple-api
+
+abrir na rota:
+localhost:8000/docs
+
+
+
+
+
+==================
+export GEMINI_API_KEY="chave-aqui"
+abrir o web sever:  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+para conectar o index.html:  python -m http.server 9000
