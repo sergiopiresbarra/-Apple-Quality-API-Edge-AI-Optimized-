@@ -65,3 +65,13 @@ Implementação de banco de dados relacional (SQLite) para rastreabilidade.
 
 **Interface Gráfica (Front-end):** Desenvolvimento de um Dashboard em HTML/JS para facilitar o uso por usuários não técnicos.
 **Auditoria Visual:** Nova rota `/historico` conectada ao Front-end, permitindo visualizar as últimas análises e decisões da IA em tempo real.
+
+## 🛡️ Robustez e Resiliência de Rede (Network Resilience) (v4.0)
+
+Para garantir a operação contínua da API em ambientes industriais com conectividade instável, foi implementado um padrão de Circuit Breaker Simplificado com as seguintes camadas de proteção:
+
+-Verificação de Conectividade (Pre-flight Check): Antes de invocar o serviço de IA na nuvem (Gemini), o sistema realiza um teste de socket de baixo nível (ping DNS de 1.5s). Se não houver internet, o sistema comuta instantaneamente para o "Modo Offline", evitando latência desnecessária.
+
+-Gerenciamento de Timeouts: As requisições para a API Generativa possuem um tempo limite estrito (8s). Caso o servidor demore a responder, a conexão é encerrada preventivamente para não travar a thread de processamento da API (blocking I/O prevention).
+
+-Degradação Graciosa (Graceful Degradation): Em caso de falha de rede ou timeout, a API não quebra (Crash); ela retorna o veredito da Rede Neural (que roda localmente) e uma mensagem de aviso no campo da receita, garantindo que a esteira de produção nunca pare.
